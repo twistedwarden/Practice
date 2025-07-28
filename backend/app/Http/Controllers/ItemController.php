@@ -17,6 +17,8 @@ class ItemController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'nullable|numeric',
+            'category' => 'nullable|string|max:255',
         ]);
         $item = Item::create($validated);
         return response()->json($item, 201);

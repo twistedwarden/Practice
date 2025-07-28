@@ -9,11 +9,21 @@ interface ItemCardProps {
 }
 
 export const ItemCard: React.FC<ItemCardProps> = ({ item, onEdit, onDelete }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (dateString?: string | null): string => {
+    if (!dateString) return 'N/A';
+
+    // Attempt parsing MySQL datetime (e.g., "2025-07-28 19:03:53")
+    const date = new Date(dateString.replace(' ', 'T'));
+
+    if (isNaN(date.getTime())) return 'Invalid Date';
+
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
     });
   };
 
@@ -38,7 +48,7 @@ export const ItemCard: React.FC<ItemCardProps> = ({ item, onEdit, onDelete }) =>
       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
         <div className="flex items-center text-gray-500 text-sm">
           <Calendar className="w-4 h-4 mr-1" />
-          {formatDate(item.updatedAt)}
+          {formatDate(item.updated_at)}
         </div>
         
         <div className="flex space-x-2">

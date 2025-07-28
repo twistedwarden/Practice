@@ -1,11 +1,11 @@
 export interface Item {
   id: number;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   category: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface CreateItemRequest {
