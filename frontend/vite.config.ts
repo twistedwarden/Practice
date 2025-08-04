@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api':'https://backend-production-af06.up.railway.app',
+      '/api':'http://localhost:8000',
     },
   },
 });
