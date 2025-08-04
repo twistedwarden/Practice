@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: sample_mysql_dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: password
+      MYSQL_USER: laravel
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    networks:
+      - sample_network_dev
+
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: sample_nginx_dev
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./backend:/var/www
+    depends_on:
+      - backend
+    networks:
+      - sample_network_dev
+
+  # Laravel Backend (Development)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.dev
+    container_name: sample_backend_dev
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+      - ./backend/storage:/var/www/storage
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=laravel
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=password
+      - APP_ENV=local
+      - APP_DEBUG=true
+    depends_on:
+      - mysql
+    networks:
+      - sample_network_dev
+
+  # React Frontend (Development)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: sample_frontend_dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - sample_network_dev
+
+volumes:
+  mysql_data_dev:
+
+networks:
+  sample_network_dev:
+    driver: bridge 
