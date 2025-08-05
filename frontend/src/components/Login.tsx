@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 
 interface LoginFormData {
@@ -14,7 +15,12 @@ interface FormErrors {
   general?: string;
 }
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  onLogin: (user: any) => void;
+}
+
+export const Login: React.FC<LoginProps> = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
@@ -63,8 +69,9 @@ export const Login: React.FC = () => {
       // Handle successful login
       console.log('Login successful:', data);
       
-      // Redirect to main app or dashboard
-      window.location.href = '/dashboard';
+      // Call the onLogin callback and redirect
+      onLogin(data.user);
+      navigate('/dashboard');
       
     } catch (error: any) {
       console.error('Login error:', error);
@@ -238,9 +245,9 @@ export const Login: React.FC = () => {
           <div className="mt-8 text-center">
             <p className="text-gray-600 text-sm">
               Don't have an account?{' '}
-              <button className="text-orange-600 hover:text-orange-700 font-medium transition-colors" onClick={() => window.location.hash = 'register'}>
+              <Link to="/register" className="text-orange-600 hover:text-orange-700 font-medium transition-colors">
                 Sign up here
-              </button>
+              </Link>
             </p>
           </div>
         </div>

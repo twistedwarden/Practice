@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, AlertCircle, Check } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 
 interface RegisterFormData {
@@ -19,7 +20,12 @@ interface FormErrors {
   general?: string;
 }
 
-export const Register: React.FC = () => {
+interface RegisterProps {
+  onRegister: (user: any) => void;
+}
+
+export const Register: React.FC<RegisterProps> = ({ onRegister }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<RegisterFormData>({
     name: '',
     email: '',
@@ -119,8 +125,9 @@ export const Register: React.FC = () => {
       // Handle successful registration
       console.log('Registration successful:', data);
       
-      // Redirect to main app or dashboard
-      window.location.href = '/dashboard';
+      // Call the onRegister callback and redirect
+      onRegister(data.user);
+      navigate('/dashboard');
       
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -415,12 +422,9 @@ export const Register: React.FC = () => {
           <div className="mt-8 text-center">
             <p className="text-gray-600 text-sm">
               Already have an account?{' '}
-              <button 
-                onClick={() => window.location.hash = 'login'}
-                className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
-              >
+              <Link to="/login" className="text-orange-600 hover:text-orange-700 font-medium transition-colors">
                 Sign in here
-              </button>
+              </Link>
             </p>
           </div>
         </div>
