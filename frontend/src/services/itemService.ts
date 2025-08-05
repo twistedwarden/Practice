@@ -1,12 +1,12 @@
 import { Item, CreateItemRequest, UpdateItemRequest } from '../types/item';
-import axios from 'axios';
+import API from './authService';
 
-const API_URL = '/api/items';
+const API_URL = '/items';
 
 export const itemService = {
   // Get all items
   async getItems(): Promise<Item[]> {
-    const response = await axios.get(API_URL);
+    const response = await API.get(API_URL);
       // Normalize to always return an array
       if (Array.isArray(response.data)) {
         return response.data;
@@ -19,25 +19,25 @@ export const itemService = {
 
   // Get item by ID
   async getItem(id: number): Promise<Item | null> {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await API.get(`${API_URL}/${id}`);
     return response.data;
   },
 
   // Create new item
   async createItem(item: CreateItemRequest): Promise<Item> {
-    const response = await axios.post(API_URL, item);
+    const response = await API.post(API_URL, item);
     return response.data;
   },
 
   // Update existing item
   async updateItem(id: number | string, item: UpdateItemRequest): Promise<Item> {
-    const response = await axios.put(`${API_URL}/${id}`, item);
+    const response = await API.put(`${API_URL}/${id}`, item);
     return response.data;
   },
 
   // Delete item
   async deleteItem(id: number): Promise<void> {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const response = await API.delete(`${API_URL}/${id}`);
     return response.data;
   }
 };
